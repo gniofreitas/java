@@ -5,6 +5,8 @@ import java.util.List;
 import com.home.javaSpring.model.Country;
 import com.home.javaSpring.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,20 +21,24 @@ public class CountryController {
 	@Autowired
 	CountryService countryService;
 	
-	@RequestMapping(value = "/getAllCountries", method = RequestMethod.GET, headers = "Accept=application/json")
+	@RequestMapping(value = "/getAllCountries", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	public String getCountries(Model model) {
-		System.out.println("sysout 1 ");
 		List<Country> listOfCountries = countryService.getAllCountries();
 
-		System.out.println("sysout 1 ");
-
 		model.addAttribute("country", new Country());
-		System.out.println("sysout 1 ");
-
 		model.addAttribute("listOfCountries", listOfCountries);
-		System.out.println("sysout 1 ");
 
 		return "countryDetails";
+	}
+	
+	@RequestMapping(value = "/getAllCountriesJSON", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
+	public ResponseEntity<List<Country>> getCountriesJSON(Model model) {
+		List<Country> listOfCountries = countryService.getAllCountries();
+
+		model.addAttribute("country", new Country());
+		model.addAttribute("listOfCountries", listOfCountries);
+
+		return new ResponseEntity<List<Country>>(listOfCountries, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/getCountry/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
